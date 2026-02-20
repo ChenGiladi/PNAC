@@ -11,7 +11,9 @@ data/three_classes_dataset/
 code/pnac_results/
 code/pnac_results_confidence_study/
 
-# LaTeX build artifacts
+# Manuscript and LaTeX (kept outside this repo)
+main.tex
+references.bib
 *.aux
 *.bbl
 *.blg
@@ -20,9 +22,8 @@ code/pnac_results_confidence_study/
 *.log
 *.out
 *.synctex.gz
-
-# Figures archive (superseded files)
-figures/archive/
+Definitions/
+figures/
 
 # IDE / OS
 .vscode/
@@ -64,3 +65,4 @@ journal/
 
 # Generated PDF
 main.pdf
+main_pdf*.txt
