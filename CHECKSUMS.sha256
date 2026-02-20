@@ -1,0 +1,12 @@
+# SHA-256 checksums for PNAC manuscript reproducibility-critical files.
+# Verify with: sha256sum -c CHECKSUMS.sha256
+# Generated: 2026-02-20, release tag v1.0
+9a90b44cbf7ac71eff86969260a6b0e15be79d1f4cfef4e725c4c8b0fe562cb4  code/pnac.py
+f56881cb14745032348ecdb7d156b7b995e0de29a75ed3005d39f20c39543436  code/run_calibration.py
+c6d3494446aaf224c590feb31c37143f0b61b88d1ec7d956e978cd2652f1df74  code/analyze_studies.py
+1ca8bff3490e8f510c8e2fd22311b21e702a82f1edaeae1227b834f7245daf70  code/generate_manuscript_figures.py
+4d6a0222abd0c77d6c92afcebbfdbac855302abbb380ef7b8f9c3129e95f30e7  code/synthetic_pnac_analysis.py
+5ada1a916b25b1932da7f1f8eb2af27479d5b4c58615dbc294cad32e60fc20b0  code/requirements.txt
+ec62314d21854d91ef287d3b35c856e6dc61450cd73406d1ea90922df3e9760b  code/requirements-lock.txt
+bad9ae6206eafb37806accc739d63a26426618404b27c81f4233a84b823b9f63  code/experiment_manifest.json
+350bc115c9d725cfc1be70eb005ecbb28fa9d447607262d7d479ac6618e828d6  data/three_classes_split_manifest.json
