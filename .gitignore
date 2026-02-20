@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv_wsl/
+
+# Dataset images (too large for GitHub; archived separately on Zenodo)
+data/three_classes_dataset/
+
+# Experiment results (too large for GitHub; archived separately on Zenodo)
+code/pnac_results/
+code/pnac_results_confidence_study/
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+
+# Figures archive (superseded files)
+figures/archive/
+
+# IDE / OS
+.vscode/
+_gsdata_/
+*.swp
+*~
+
+# Conversation logs and review loop artifacts
+conversation/
+conversation_*.txt
+session_log_*.txt
+manuscript_review_loop_*.py
+manuscript_review_loop_*.bat
+manuscript_review_loop_*.json
+manuscript_review_loop_*.txt
+launch_*.bat
+log/
+
+# PDF snapshots (generated, not source)
+main_pdf*.txt
+
+# Backup scripts
+auto_backup.py
+cleanup_backups.bat
+cleanup_backups.py
+start_auto_backup.bat
+
+# Archive
+archive/
+
+# Reference PDFs (copyrighted; not redistributable)
+references/
+
+# Internal project management
+Tasks.txt
+student_guide_PNAC_implementation.txt
+manuscript_revision_todo_checklist.txt
+journal/
+
+# Generated PDF
+main.pdf
