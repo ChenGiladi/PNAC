@@ -1,0 +1,78 @@
+{
+  "_comment": "Machine-readable experiment manifest for PNAC manuscript. All reported results can be reproduced by iterating over the entries below.",
+  "_version": "1.0",
+  "_generated": "2026-02-20",
+
+  "seeds": [42, 123, 456],
+
+  "shared_hyperparameters": {
+    "backbone": "resnet18",
+    "pretrained": true,
+    "image_size": 224,
+    "epochs_per_iteration": 5,
+    "pnac_iterations": 5,
+    "tta_runs": 3,
+    "batch_size": 160,
+    "num_workers": 2,
+    "optimizer": "Adam",
+    "learning_rate": 0.0001,
+    "dataset_manifest": "data/three_classes_split_manifest.json"
+  },
+
+  "studies": {
+    "main_noise_transition": {
+      "description": "Main study: 9 noise rates x 3 seeds = 27 experiments (Tables 2-4, Figures 1-3)",
+      "confidence_threshold": 0.85,
+      "noise_rates": [0.00, 0.10, 0.20, 0.30, 0.40, 0.45, 0.50, 0.55, 0.60],
+      "output_dir": "code/pnac_results/noise_{rho}/seed_{seed}/",
+      "runner": "python code/run_calibration.py",
+      "total_experiments": 27,
+      "expected_runtime_hours": 2.5
+    },
+
+    "confidence_threshold": {
+      "description": "Confidence study: 5 noise rates x 4 thresholds x 3 seeds = 60 experiments (Table 5, Figure 4)",
+      "confidence_thresholds": [0.70, 0.80, 0.90, 0.95],
+      "noise_rates": [0.00, 0.20, 0.40, 0.50, 0.60],
+      "output_dir": "code/pnac_results_confidence_study/conf_{tau}/noise_{rho}/seed_{seed}/",
+      "runner": "python code/pnac.py --noise {rho} --confidence {tau} --seeds 42 123 456",
+      "total_experiments": 60,
+      "expected_runtime_hours": 6.5
+    },
+
+    "synthetic_validation": {
+      "description": "Synthetic data validation: noise sweep + difficulty sweep (Figures 5-8)",
+      "runner": "python code/synthetic_pnac_analysis.py",
+      "noise_sweep": {
+        "noise_rates": [0.00, 0.10, 0.20, 0.30, 0.40, 0.50, 0.55, 0.60],
+        "class_separation_sigma": 0.7,
+        "samples_per_class": 2000
+      },
+      "difficulty_sweep": {
+        "noise_rate": 0.00,
+        "sigmas": [0.30, 0.50, 0.70, 0.90, 1.10],
+        "samples_per_class": 2000
+      },
+      "expected_runtime_minutes": 10
+    }
+  },
+
+  "output_artifacts": {
+    "per_experiment": [
+      "summary.json",
+      "metrics.csv"
+    ],
+    "figures": [
+      "figures/robustness_horizon.pdf",
+      "figures/cascade_outcomes.pdf",
+      "figures/f1_trajectories.pdf",
+      "figures/throughput.pdf",
+      "figures/confidence_study.pdf",
+      "figures/synthetic_noise_sweep.pdf",
+      "figures/synthetic_difficulty_sweep.pdf",
+      "figures/synthetic_mechanism.pdf",
+      "figures/synthetic_mechanism_validation.pdf",
+      "figures/synthetic_summary.pdf"
+    ]
+  }
+}
