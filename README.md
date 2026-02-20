@@ -1,122 +1,132 @@
-# PNAC - Pseudo-label Noise Amplification Cascade
+# PNAC — Pseudo-Label Noise Amplification Cascade
 
-## Quick Start
+A diagnostic framework that reveals dataset robustness to label noise through iterative pseudo-labeling. Accompanies the manuscript *"Diagnosing Label Noise Robustness via Pseudo-Label Noise Amplification Cascade"* (submitted to MDPI *Journal of Imaging*).
 
-| What you want to do | Run this |
-|---------------------|----------|
-| **First time setup** | `SETUP_CONDA.bat` |
-| **Run ALL experiments (transition + confidence)** | `RUN_FULL_STUDY.bat` |
-| **Generate manuscript figures** | `GENERATE_MANUSCRIPT_FIGURES.bat` |
-| **Analyze results** | `ANALYZE_STUDIES.bat` |
-
-## One-Time Setup
-
-| BAT File | What it does |
-|----------|-------------|
-| `SETUP_CONDA.bat` | Creates the `pnac` conda environment (Python 3.11, PyTorch + CUDA 12.1, dependencies). Run once before any experiments. |
-
-## Experiment Runners
-
-### Main Orchestrators
-
-| BAT File | Experiments | Runtime | Description |
-|----------|------------|---------|-------------|
-| `RUN_FULL_STUDY.bat` | 69 | ~6-8 hours | **Recommended.** Runs both Part 1 (transition) and Part 2 (confidence study). Has skip logic - safe to restart. |
-| `RUN_ALL_EXPERIMENTS.bat` | 18 | ~2-3 hours | Original baseline study: noise 0.0-0.5, confidence 0.85, 3 seeds each. |
-| `RUN_CONFIDENCE_STUDY.bat` | 60 | ~5-6 hours | Confidence threshold study only: 5 noise levels x 4 confidence thresholds x 3 seeds. |
-| `RUN_TRANSITION_STUDY.bat` | 9 | ~30-45 min | Transition zone only: noise 0.45, 0.55, 0.60, 3 seeds each. |
-
-### Individual Noise Levels
-
-Each runs 3 seeds at a single noise level with default confidence (0.85):
-
-| BAT File | Noise Level |
-|----------|------------|
-| `RUN_NOISE_0.0.bat` | 0.0 (clean) |
-| `RUN_NOISE_0.1.bat` | 0.1 |
-| `RUN_NOISE_0.2.bat` | 0.2 |
-| `RUN_NOISE_0.3.bat` | 0.3 |
-| `RUN_NOISE_0.4.bat` | 0.4 |
-| `RUN_NOISE_0.45.bat` | 0.45 |
-| `RUN_NOISE_0.5.bat` | 0.5 |
-| `RUN_NOISE_0.55.bat` | 0.55 |
-| `RUN_NOISE_0.60.bat` | 0.60 |
-
-### Core Scripts (called by orchestrators)
-
-| BAT File | Description |
-|----------|-------------|
-| `run_noise_conda.bat` | Core runner. Usage: `run_noise_conda.bat <noise_level>`. Runs `pnac.py` for 3 seeds with confidence 0.85. Skips completed runs (checks for `summary.json`). |
-| `run_noise_confidence_conda.bat` | Like above but with custom confidence. Usage: `run_noise_confidence_conda.bat <noise_level> <confidence>`. |
-
-## Analysis and Visualization
-
-| BAT File | Description |
-|----------|-------------|
-| `ANALYZE_STUDIES.bat` | Runs `analyze_studies.py` - analyzes all experiment results and prints summary tables. |
-| `GENERATE_MANUSCRIPT_FIGURES.bat` | Generates publication-quality PDF figures for the manuscript (F1 trajectories, robustness horizon, failure modes, throughput vs noise). |
-| `GENERATE_PLOTS.bat` | Generates general plots from both real and synthetic results. |
-| `RUN_SYNTHETIC_ANALYSIS.bat` | Runs synthetic dataset experiments (noise sweep, difficulty sweep, mechanism validation). ~2-3 min. |
-
-## Utilities
-
-| BAT File | Description |
-|----------|-------------|
-| `CLEAR_RESULTS.bat` | **Destructive.** Deletes all experiment results and figures. |
-| `cleanup_backups.bat` | Cleans up backup folders (dry run by default). |
-| `start_auto_backup.bat` | Starts automatic backup of the project folder. |
-
-## AI Assistant Launchers
-
-| BAT File | Description |
-|----------|-------------|
-| `launch_claude.bat` | Opens Claude Code CLI in WSL. |
-| `launch_codex.bat` | Opens Codex CLI in WSL. |
-| `launch_gemini.bat` | Opens Gemini CLI in WSL. |
-| `manuscript_review_loop.bat` | Interactive manuscript review loop with multiple AI model options. |
-| `manuscript_review_loop_viewer.bat` | GUI viewer for manuscript review loop results. |
-
-## Other
-
-| BAT File | Description |
-|----------|-------------|
-| `RUN_PUBLICATION_GPU.bat` | Runs experiments via WSL with GPU support (alternative to direct Windows execution). |
-
-## Resume / Restart Behavior
-
-All experiment runners have **built-in skip logic**. Each completed experiment saves a `summary.json` file. When you re-run any BAT file, it checks for this file and skips already-completed experiments. This means:
-
-- You can safely stop and restart at any time
-- Only the currently-running experiment will need to re-run
-- Completed experiments will show `[SKIP]` in the output
-
-## Results Directory Structure
+## Repository Structure
 
 ```
 code/
-  pnac_results/                          # Default confidence (0.85)
-    noise_0.0/seed_42/pnac_YYYYMMDD_HHMMSS/
-      metrics.csv                        # Per-iteration metrics
-      summary.json                       # Final results
-      models/                            # Saved model checkpoints
-      pseudo_labels/                     # Pseudo-label data
-    noise_0.0/seed_123/...
-    ...
-  pnac_results_confidence_study/         # Variable confidence
-    conf_0.70/noise_0.0/seed_42/...
-    conf_0.80/noise_0.0/seed_42/...
-    conf_0.90/...
-    conf_0.95/...
+  pnac.py                        # Core PNAC implementation
+  run_calibration.py              # Run experiments across noise levels and seeds
+  analyze_studies.py              # Analyze results and print summary tables
+  generate_manuscript_figures.py  # Generate publication figures
+  synthetic_pnac_analysis.py      # Synthetic dataset validation experiments
+  requirements.txt                # Python dependencies
+data/
+  three_classes_split_manifest.json   # Train/val/unlabeled split definition
 ```
 
-## Experiment Configuration (all experiments)
+## Setup
 
-| Parameter | Value |
-|-----------|-------|
-| Architecture | ResNet-18 (ImageNet pretrained) |
-| Epochs per iteration | 5 |
-| Pseudo-labeling iterations | 5 |
-| TTA runs | 3 |
-| Batch size | 160 |
-| Seeds | 42, 123, 456 |
-| Dataset | 4,626 labeled / 990 validation / 35,654 unlabeled |
+```bash
+# Create environment (Python 3.11, CUDA 12.1)
+conda create -n pnac python=3.11 -y
+conda activate pnac
+pip install -r code/requirements.txt
+```
+
+## Usage
+
+### Single Experiment
+
+Run one PNAC experiment at a specific noise rate and seed:
+
+```bash
+python code/pnac.py \
+  --data-root data/three_classes_dataset \
+  --manifest data/three_classes_split_manifest.json \
+  --noise-rate 0.3 \
+  --iterations 5 \
+  --epochs 5 \
+  --confidence 0.85 \
+  --tta 3 \
+  --batch-size 160 \
+  --pretrained \
+  --seed 42 \
+  --output-dir code/pnac_results/noise_0.3/seed_42
+```
+
+### Main Study (9 noise rates x 3 seeds = 27 experiments)
+
+```bash
+python code/run_calibration.py
+```
+
+This runs PNAC for noise rates 0.0, 0.1, 0.2, 0.3, 0.4, 0.45, 0.5, 0.55, 0.6 with seeds 42, 123, 456. Results are saved under `code/pnac_results/`. Completed runs (detected via `summary.json`) are skipped on restart.
+
+### Confidence Threshold Study (5 noise rates x 4 thresholds x 3 seeds = 60 experiments)
+
+```bash
+for tau in 0.70 0.80 0.90 0.95; do
+  for rho in 0.0 0.2 0.4 0.5 0.6; do
+    for seed in 42 123 456; do
+      python code/pnac.py \
+        --data-root data/three_classes_dataset \
+        --manifest data/three_classes_split_manifest.json \
+        --noise-rate $rho \
+        --confidence $tau \
+        --iterations 5 --epochs 5 --tta 3 --batch-size 160 --pretrained \
+        --seed $seed \
+        --output-dir "code/pnac_results_confidence_study/conf_${tau}/noise_${rho}/seed_${seed}"
+    done
+  done
+done
+```
+
+### Synthetic Validation
+
+```bash
+python code/synthetic_pnac_analysis.py
+```
+
+### Analysis and Figures
+
+```bash
+python code/analyze_studies.py
+python code/generate_manuscript_figures.py
+```
+
+## Command-Line Options
+
+| Option | Default | Manuscript value | Description |
+|--------|---------|-----------------|-------------|
+| `--data-root` | *(required)* | `data/three_classes_dataset` | Path to image dataset |
+| `--manifest` | *(required)* | `data/three_classes_split_manifest.json` | Train/val/unlabeled split |
+| `--noise-rate` | 0.0 | 0.0–0.6 | Fraction of labels to corrupt |
+| `--iterations` | 6 | 5 | Pseudo-labeling rounds |
+| `--epochs` | 5 | 5 | Training epochs per round |
+| `--confidence` | 0.95 | 0.85 | Confidence threshold τ |
+| `--tta` | 10 | 3 | Test-time augmentation runs |
+| `--batch-size` | 32 | 160 | Training batch size |
+| `--seed` | 42 | 42, 123, 456 | Random seed |
+| `--pretrained` | False | True | Use ImageNet-pretrained ResNet-18 |
+
+## Output Structure
+
+Each experiment produces:
+
+```
+summary.json          # Final metrics, configuration, per-class F1
+metrics.csv           # Per-iteration validation accuracy and F1
+pseudo_labels/        # Selected pseudo-labels per iteration
+models/               # Saved model checkpoints
+```
+
+## Dataset
+
+The ultrasound phantom dataset (42,266 images, 3.9 GB) is not included in this repository due to size. Contact the corresponding author (chengi1@sce.ac.il) for access, or see the Data Availability section of the manuscript.
+
+The split manifest (`data/three_classes_split_manifest.json`) defines the train (4,626) / validation (990) / unlabeled (35,654) partition used in all experiments.
+
+## Reproducibility Checksums (SHA-256)
+
+| File | SHA-256 (first 8) |
+|------|-------------------|
+| `code/pnac.py` | `9a90b44c` |
+| `code/run_calibration.py` | `f56881cb` |
+| `code/requirements.txt` | `5ada1a91` |
+| `data/three_classes_split_manifest.json` | `350bc115` |
+
+## License
+
+See the manuscript for terms.

@@ -4,12 +4,16 @@ __pycache__/
 *.pyo
 venv_wsl/
 
-# Dataset images (too large for GitHub; archived separately on Zenodo)
+# Dataset images (too large for GitHub)
 data/three_classes_dataset/
 
-# Experiment results (too large for GitHub; archived separately on Zenodo)
+# Experiment results (too large for GitHub)
 code/pnac_results/
 code/pnac_results_confidence_study/
+
+# Batch and shell scripts (local orchestration only)
+*.bat
+*.sh
 
 # Manuscript and LaTeX (kept outside this repo)
 main.tex
@@ -22,6 +26,8 @@ references.bib
 *.log
 *.out
 *.synctex.gz
+main.pdf
+main_pdf*.txt
 Definitions/
 figures/
 
@@ -35,26 +41,17 @@ _gsdata_/
 conversation/
 conversation_*.txt
 session_log_*.txt
-manuscript_review_loop_*.py
-manuscript_review_loop_*.bat
-manuscript_review_loop_*.json
-manuscript_review_loop_*.txt
+manuscript_review_loop*
 launch_*.bat
 log/
 
-# PDF snapshots (generated, not source)
-main_pdf*.txt
-
 # Backup scripts
 auto_backup.py
-cleanup_backups.bat
-cleanup_backups.py
-start_auto_backup.bat
+cleanup_backups.*
+start_auto_backup.*
 
-# Archive
+# Archive and references
 archive/
-
-# Reference PDFs (copyrighted; not redistributable)
 references/
 
 # Internal project management
@@ -62,7 +59,3 @@ Tasks.txt
 student_guide_PNAC_implementation.txt
 manuscript_revision_todo_checklist.txt
 journal/
-
-# Generated PDF
-main.pdf
-main_pdf*.txt
